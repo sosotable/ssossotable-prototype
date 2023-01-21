@@ -1,17 +1,15 @@
 <template>
-  <SignIn></SignIn>
+  <h1>Social</h1>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent, ref } from 'vue';
-import SignIn from 'layouts/SignIn.vue';
 export default defineComponent({
-  name: 'IndexPage',
-  components: {
-    SignIn,
-  },
+  name: 'SocialSignUp',
   setup() {
     return {};
   },
 });
 </script>
+
+<style scoped></style>
