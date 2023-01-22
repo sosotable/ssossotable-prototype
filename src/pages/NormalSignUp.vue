@@ -2,39 +2,29 @@
   <form class="form-signin" style="text-align: center">
     <h3>회원가입</h3>
     <div class="input-group mb-3">
-      <q-input
-        outlined
-        bottom-slots
-        v-model="text"
-        label="닉네임을 입력해주세요"
-        counter
-        maxlength="12"
-        :dense="dense"
-      >
-        <template v-slot:before>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/img/avatar5.jpg" />
-          </q-avatar>
-        </template>
-        <template v-slot:hint> 12자 이내의 닉네임을 입력해주세요 </template>
-      </q-input>
-      <q-input
-        type="email"
-        pattern="/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/"
-        required
-        outlined
-        v-model="text"
-        label="메일 주소를 입력해주세요"
-        :dense="dense"
-      />
-      <q-btn color="white" text-color="black" label="인증 번호 전송" />
-      <q-input
-        outlined
-        v-model="text"
-        label="인증 번호를 입력해주세요"
-        :dense="dense"
-      />
-      <q-btn color="white" text-color="black" label="인증 번호 확인" />
+
+      <div class="column justify-start">
+        <q-input
+          type="email"
+          pattern="/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/"
+          required
+          outlined
+          v-model="text"
+          label="메일 주소를 입력해주세요"
+          :dense="dense"
+        />
+        <q-btn color="white" text-color="black" label="인증 번호 전송" />
+      </div>
+      <div class="column justify-start">
+        <q-input
+          outlined
+          v-model="text"
+          label="인증 번호를 입력해주세요"
+          :dense="dense"
+        />
+        <q-btn color="white" text-color="black" label="인증 번호 확인" />
+      </div>
+
       <q-input
         outlined
         v-model="text"
@@ -57,10 +47,14 @@
 
 <script>
 import { defineComponent, ref } from 'vue';
+import { io } from "socket.io-client";
 export default defineComponent({
   name: 'NormalSignUp',
   setup() {
-    return {};
+    const socket = io();
+    return {
+      socket
+    };
   },
   data() {
     return {
@@ -206,4 +200,11 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+  .q-field {
+    margin: 20px;
+  }
+  button {
+    margin: 0 20px;
+  }
+</style>
