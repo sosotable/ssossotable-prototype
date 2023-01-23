@@ -9,11 +9,60 @@ const routes: RouteRecordRaw[] = [
     path: '/signup/',
     component: () => import('layouts/SignUp.vue'),
     children: [
-      { path: 'normal', component: () => import('pages/NormalSignUp.vue') },
-      { path: 'social', component: () => import('pages/SocialSignUp.vue') },
+      {
+        path: 'normal',
+        component: () => import('pages/signup/NormalSignUp.vue'),
+      },
+      {
+        path: 'social',
+        component: () => import('pages/signup/SocialSignUp.vue'),
+      },
     ],
   },
-
+  {
+    path: '/initial/',
+    component: () => import('layouts/InitialSignup.vue'),
+    children: [
+      {
+        path: 'info',
+        component: () => import('pages/initial/InitialSignupInfo.vue'),
+      },
+      {
+        path: 'food',
+        component: () => import('pages/initial/InitialSignupFood.vue'),
+      },
+    ],
+  },
+  {
+    path: '/main/',
+    component: () => import('layouts/MainPage.vue'),
+    children: [
+      {
+        path: 'recommendation',
+        component: () => import('pages/main/MainRecommendation.vue'),
+      },
+      { path: 'rating', component: () => import('pages/main/MainRating.vue') },
+      { path: 'record', component: () => import('pages/main/MainRecord.vue') },
+      { path: 'feed', component: () => import('pages/main/MainFeed.vue') },
+      {
+        path: 'friends',
+        component: () => import('pages/main/MainFriends.vue'),
+      },
+      {
+        path: 'info/friend',
+        component: () => import('pages/main/MainFriendInfo.vue'),
+      },
+      { path: 'info/my', component: () => import('pages/main/MainMyInfo.vue') },
+      {
+        path: 'diary/friend',
+        component: () => import('pages/main/MainFriendDiary.vue'),
+      },
+      {
+        path: 'info/my',
+        component: () => import('pages/main/MainMyDiary.vue'),
+      },
+    ],
+  },
   // Always leave this as last one,
   // but you can also remove it
   {

@@ -2,7 +2,6 @@
   <form class="form-signin" style="text-align: center">
     <h3>회원가입</h3>
     <div class="input-group mb-3">
-
       <div class="column justify-start">
         <q-input
           type="email"
@@ -47,13 +46,13 @@
 
 <script>
 import { defineComponent, ref } from 'vue';
-import { io } from "socket.io-client";
+import { io } from 'socket.io-client';
 export default defineComponent({
   name: 'NormalSignUp',
   setup() {
     const socket = io();
     return {
-      socket
+      socket,
     };
   },
   data() {
@@ -201,10 +200,10 @@ export default defineComponent({
 </script>
 
 <style scoped>
-  .q-field {
-    margin: 20px;
-  }
-  button {
-    margin: 0 20px;
-  }
+.q-field {
+  margin: 20px;
+}
+button {
+  margin: 0 20px;
+}
 </style>
