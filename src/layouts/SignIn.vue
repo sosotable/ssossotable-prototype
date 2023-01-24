@@ -9,7 +9,7 @@
       <q-header bordered class="bg-white text-primary">
         <q-toolbar>
           <q-toolbar-title class="text-center">
-            <h3>소소식탁</h3>
+            <h3 style="margin: 5%">소소식탁</h3>
           </q-toolbar-title>
         </q-toolbar>
       </q-header>

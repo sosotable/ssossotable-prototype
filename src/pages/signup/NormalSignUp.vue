@@ -1,6 +1,5 @@
 <template>
   <form class="form-signin" style="text-align: center">
-    <h3>회원가입</h3>
     <div class="input-group mb-3">
       <div class="column justify-start">
         <q-input
@@ -8,40 +7,79 @@
           pattern="/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/"
           required
           outlined
-          v-model="text"
+          v-model="email"
           label="메일 주소를 입력해주세요"
+          :hint="this.mail_duplication_message"
           :dense="dense"
+          :rules="[
+            (val) => this.mail_duplication_flag || '이미 가입된 이메일이에요',
+          ]"
         />
-        <q-btn color="white" text-color="black" label="인증 번호 전송" />
+        <q-btn
+          color="white"
+          @click="send_code"
+          text-color="black"
+          label="인증 번호 전송"
+        />
       </div>
       <div class="column justify-start">
         <q-input
           outlined
-          v-model="text"
+          v-model="auth_code_confirm"
           label="인증 번호를 입력해주세요"
           :dense="dense"
+          :hint="this.auth_code_confirm_message"
         />
-        <q-btn color="white" text-color="black" label="인증 번호 확인" />
       </div>
-
       <q-input
         outlined
-        v-model="text"
-        label="6자에서 20자 사이의 비밀번호를 입력해주세요"
+        v-model="password_init"
+        label="비밀번호를 입력해주세요"
+        type="password"
         counter
         maxlength="20"
         minlength="6"
         :dense="dense"
+        :rules="[
+          (val) =>
+            (val.length >= 6 && val.length <= 20) ||
+            '6자에서 20자 사이의 비밀번호를 입력해주세요',
+        ]"
       />
       <q-input
         outlined
-        v-model="text"
-        label="비밀번호를 확인해주세요"
+        v-model="password_confirm"
+        type="password"
+        label="비밀번호를 다시 한 번 입력해주세요"
         :dense="dense"
+        :hint="this.password_confirm_message"
       />
-      <q-btn color="white" text-color="black" label="가입하기" />
+      <q-btn
+        @click="signup"
+        style="margin: 0 auto 20px auto"
+        color="white"
+        text-color="black"
+        label="가입하기"
+      />
     </div>
   </form>
+  <q-dialog
+    v-model="signup_submit_modal"
+    persistent
+    transition-show="flip-down"
+    transition-hide="flip-up"
+  >
+    <q-card class="bg-primary text-white">
+      <q-bar>
+        <div><h6>환영해요!</h6></div>
+        <q-space />
+      </q-bar>
+      <q-card-section />
+      <q-card-section class="q-pt-none">
+        소소식탁에 가입 완료되었어요!
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script>
@@ -50,68 +88,108 @@ import { io } from 'socket.io-client';
 export default defineComponent({
   name: 'NormalSignUp',
   setup() {
-    const socket = io();
+    // MARK: 소켓 연결
+    const socket = io('http://127.0.0.1:3000');
     return {
       socket,
+      dense: ref(false),
+      signup_submit_modal: ref(false),
     };
   },
   data() {
     return {
-      logo: './src/assets/logo.png',
-      auth_code: Number,
+      // MARK: 이메일 주소(user_id)
       email: '',
+      // MARK: 인증 코드
+      auth_code: '',
+      auth_code_confirm: '',
+      /**MARK: 메일 인증값
+       * 인증 이후 바인딩된 email값 변경 방지 위한 값 할당
+       * **/
       confirm_email: '',
-      send_code_input: {
-        value: '메일 주소를 입력해주세요',
-      },
-      send_code_status: {
-        value: '인증코드 전송',
-        flag: false,
-      },
-      check_code_input: {
-        value: '인증 코드를 입력해주세요',
-      },
-      check_code_status: {
-        value: '인증코드 확인',
-        code: null,
-        flag: false,
-      },
-      password: {
-        init: '',
-        confirm: '',
-        verify: '6자에서 12자 사이의 비밀번호를 입력해주세요.',
-        flag: false,
-      },
-      confirm_password: '',
-      inputStyle: {
-        margin: '0',
-        display: 'block',
-        width: '100%',
-        padding: '20px',
-      },
+      mail_duplication_flag: true,
+      mail_duplication_message: '',
+      auth_code_confirm_message: '',
+      auth_code_status: false,
+      password_init: '',
+      password_confirm: '',
+      /**MARK: 비밀번호 인증값
+       * 인증 이후 바인딩된 password값 변경 방지 위한 값 할당
+       * **/
+      password_submit_confirm: '',
+      password_confirm_message: '',
+      password_flag: false,
     };
   },
+  mounted() {
+    this.socket.on('SELECT', (msg) => {
+      if (msg.TAG === 'mail_duplication') {
+        if (this.email.length > 0) {
+          // MARK: 소켓 통신 통한 메일 중복성 검사
+          msg.returnValue.length === 0
+            ? (this.mail_duplication_message = '사용 가능한 이메일이에요')
+            : (this.mail_duplication_flag = false);
+        }
+      }
+    });
+  },
+  watch: {
+    // MARK: email 값 변경 감지를 통한 해당 값 검증
+    email: function () {
+      if (this.mail_duplication_message !== '') {
+        this.mail_duplication_message = '';
+      }
+      this.socket.emit('SELECT', {
+        TAG: 'mail_duplication',
+        columns: '*',
+        table: 'user',
+        where: `user_id = '${this.email}'`,
+      });
+    },
+    // MARK: auth_code 값 검증
+    auth_code_confirm: function () {
+      parseInt(this.auth_code) === parseInt(this.auth_code_confirm)
+        ? (this.auth_code_status = true)
+        : (this.auth_code_status = false);
+      if (this.auth_code_status) {
+        this.auth_code_confirm_message = '인증 번호 확인!';
+      } else {
+        this.auth_code_confirm_message = '인증 번호가 일치하지 않아요';
+      }
+    },
+    // MARK: password값 변경 감지를 통한 검증 (init)
+    password_init: function () {
+      parseInt(this.password_init) === parseInt(this.password_confirm) &&
+      String(this.password_init).length <= 20 &&
+      String(this.password_init).length >= 6
+        ? (this.password_flag = true)
+        : (this.password_flag = false);
+      if (this.password_flag) {
+        this.password_confirm_message = '비밀번호가 일치해요';
+        this.password_submit_confirm = this.password_init;
+      } else {
+        this.password_confirm_message = '비밀번호가 일치하지 않아요';
+      }
+    },
+    // MARK: password값 변경 감지를 통한 검증 (confirm)
+    password_confirm: function () {
+      parseInt(this.password_init) === parseInt(this.password_confirm) &&
+      String(this.password_init).length <= 20 &&
+      String(this.password_init).length >= 6
+        ? (this.password_flag = true)
+        : (this.password_flag = false);
+      if (this.password_flag) {
+        this.password_confirm_message = '비밀번호가 일치해요';
+      } else {
+        this.password_confirm_message = '비밀번호가 일치하지 않아요';
+      }
+    },
+  },
   methods: {
+    // MARK: 인증 메일 전송
     async send_code() {
       // MARK: 이미 인증 코드를 보낸 경우
-      if (this.send_code_status.flag) {
-        return;
-      }
-      // MARK: 기존 가입 여부 확인
-      const user_exist = (
-        await fetch(this.$apiPaths.DAOHandler, {
-          method: 'POST',
-          body: new URLSearchParams({
-            0: 'select',
-            1: '*',
-            2: 'user',
-            3: `userid = '${this.confirm_email}'`,
-          }),
-        })
-      ).json;
-      if (user_exist.length < 0) {
-        this.email = '';
-        alert('이미 가입된 메일입니다');
+      if (this.send_code_status) {
         return;
       }
       // MARK: 이메일 유효성 확인
@@ -120,11 +198,12 @@ export default defineComponent({
           /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
         ) !== null
       ) {
-        this.send_code_status.value = '전송 완료!';
-        this.send_code_status.flag = true;
+        this.mail_duplication_message = '전송 완료!';
+        this.send_code_status = true;
         this.confirm_email = this.email;
         this.auth_code = this.rand(999999, 100000);
-        await fetch(this.$apiPaths.SignupAuth, {
+        // MARK: 소소식탁 node.js 서버 경유한 naver mailer api 사용한 메일 전송
+        await fetch('http://127.0.0.1:3000/authMail', {
           method: 'POST',
           body: new URLSearchParams({
             sendData: JSON.stringify({
@@ -138,57 +217,26 @@ export default defineComponent({
             }),
           }),
         });
+        this.mail_duplication_flag = true;
       } else {
-        this.email = '';
-        this.send_code_input.value = '올바른 메일 형식을 입력해주세요';
-        setTimeout(
-          () => (this.send_code_input.value = '메일 주소를 입력해주세요'),
-          5000
-        );
+        this.mail_duplication_message = '올바른 메일 형식을 입력해주세요';
       }
     },
-    confirm_code() {
-      if (parseInt(this.auth_code) === parseInt(this.check_code_status.code)) {
-        this.check_code_status.value = '인증 완료!';
-        this.check_code_status.flag = true;
-      } else {
-        alert('인증 번호를 확인해주세요');
-      }
-    },
-    verify_password: function () {
-      if (
-        this.password.confirm === '' ||
-        this.password.init === '' ||
-        this.password.init.length < 6 ||
-        this.password.confirm.length < 6
-      ) {
-        this.password.verify = '6자에서 12자 사이의 비밀번호를 입력해주세요.';
-      } else {
-        if (this.password.init === this.password.confirm) {
-          this.password.verify = '비밀번호가 일치합니다.';
-          this.password.flag = true;
-          this.confirm_password = this.password.init;
-        } else {
-          this.password.verify = '동일한 비밀번호를 눌러주세요.';
-          this.password.flag = false;
-        }
-      }
-    },
+    // 회원가입
     signup: async function () {
-      if (this.check_code_status.flag && this.password.flag) {
-        await fetch(this.$apiPaths.DAOHandler, {
-          method: 'POST',
-          body: new URLSearchParams({
-            0: 'insert',
-            1: 'user(userid, password)',
-            2: `'${this.confirm_email}', '${this.confirm_password}'`,
-          }),
-        });
-        this.$setCookie('', this.confirm_email, '', '');
-        this.$router.push({
-          name: 'initialsignup',
-          params: { user_name: this.confirm_email },
-        });
+      if (this.auth_code_status && this.password_flag) {
+        this.signup_submit_modal = true;
+        setTimeout(async () => {
+          await fetch('http://127.0.0.1:3000/DAO/INSERT', {
+            method: 'POST',
+            body: new URLSearchParams({
+              table: 'user',
+              columns: 'user_id, user_password',
+              values: `'${this.confirm_email}', '${this.password_submit_confirm}'`,
+            }),
+          });
+          this.$router.push('/');
+        }, 2000);
       }
     },
     rand: function (max, min) {
