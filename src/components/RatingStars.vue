@@ -58,7 +58,7 @@ export default defineComponent({
   },
   methods: {
     async set(rating) {
-      this.$emit('rated', this.rating, this.id);
+      this.$emit('rated', rating, this.id);
       this.clear();
       for (let i = 0; i < rating; i++) {
         if (i % 2 === 0) {
