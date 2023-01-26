@@ -99,7 +99,7 @@
 import { defineComponent, ref } from 'vue';
 import EssentialLink from 'components/EssentialLink.vue';
 import axios from 'axios';
-
+import { useQuasar } from 'quasar'
 const linksList = [
   {
     title: 'Github',
@@ -119,28 +119,64 @@ const linksList = [
 ];
 
 export default defineComponent({
+
   name: 'SignIn',
 
   components: {},
 
   setup() {
+    const $q = useQuasar()
     return {
       essentialLinks: linksList,
+      $q
     };
   },
   data() {
     return {
       id: '',
       password: '',
-      value: false,
+      value: false
     };
   },
   methods: {
     onSubmit: async function () {
-      await axios.post('/user', {
-        firstName: 'Fred',
-        lastName: 'Flintstone',
-      });
+      const signin_result= await (await fetch('http://127.0.0.1:3000/DAO/SELECT', {
+        method: "POST",
+        body: new URLSearchParams({
+          columns: '*',
+          table: 'user',
+          where: `user_id = '${this.id}' and user_password = '${this.password}'`
+        })
+      })).json()
+      console.log(signin_result)
+      const user_key = signin_result[0].key
+      const user_id = signin_result[0].user_id
+      const user_image = signin_result[0].user_nickname
+      const user_nickname = signin_result[0].user_image
+      const options = {
+        path : '/',
+        expires: '1h'
+      }
+      switch (signin_result.length) {
+        case 0:
+          alert('회원 정보를 확인해주세요.')
+          break;
+        case 1:
+          this.$q.cookies.set('user_key', user_key, options)
+          this.$q.cookies.set('user_id', user_id, options)
+          this.$q.cookies.set('auto_sign_in', String(this.value), options)
+          switch (signin_result[0].initial_signin) {
+            case 0:
+              this.$q.cookies.set('user_nickname', user_image, options)
+              this.$q.cookies.set('user_image', user_nickname, options)
+              this.$router.push('/main/feed')
+            case 1:
+              this.$router.push('/initial/food')
+            case 2:
+              this.$router.push('/initial/info')
+          }
+          break;
+      }
     },
     onReset: function () {
       console.log('reset');
@@ -151,6 +187,6 @@ export default defineComponent({
     normalSignup: function () {
       this.$router.push('/signup/normal');
     },
-  },
+  }
 });
 </script>

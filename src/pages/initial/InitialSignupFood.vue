@@ -32,7 +32,9 @@ import { defineComponent, ref } from 'vue';
 export default defineComponent({
   name: 'InitialSignupFood',
   setup() {
+    let ratingCount = 0
     return {
+      ratingCount
     };
   },
   data() {
@@ -53,11 +55,10 @@ export default defineComponent({
   },
   methods: {
     rated(rating, id) {
-      // TODO: backend rating insert
-      setTimeout(()=>{
-        this.info[id].show = false
-      },200)
-
+      this.ratingCount == 20
+        ? this.$router.push('/main/feed')
+        // TODO: backend rating insert
+        : setTimeout(()=>{ this.info[id].show = false; this.ratingCount += 1;},200)
     },
   },
 });

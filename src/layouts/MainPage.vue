@@ -34,36 +34,40 @@
           "
         >
           <q-list padding>
-            <q-item clickable v-ripple>
+            <q-item
+              clickable
+              v-ripple
+              :active="tab_side === 'contacts'"
+              @click="tab_side = 'contacts'"
+            >
               <q-item-section avatar>
-                <q-icon name="inbox" />
+                <q-icon name="contacts"/>
               </q-item-section>
-
-              <q-item-section> Inbox </q-item-section>
+              <q-item-section> 내 정보 </q-item-section>
             </q-item>
 
-            <q-item active clickable v-ripple>
+            <q-item
+              clickable
+              v-ripple
+              :active="tab_side === 'diversity_1'"
+              @click="tab_side = 'diversity_1'"
+            >
               <q-item-section avatar>
-                <q-icon name="star" />
+                <q-icon name="diversity_1" />
               </q-item-section>
-
-              <q-item-section> Star </q-item-section>
+              <q-item-section> 친구 </q-item-section>
             </q-item>
 
-            <q-item clickable v-ripple>
+            <q-item
+              clickable
+              v-ripple
+              :active="tab_side === 'settings'"
+              @click="tab_side = 'settings'"
+            >
               <q-item-section avatar>
-                <q-icon name="send" />
+                <q-icon name="settings" />
               </q-item-section>
-
-              <q-item-section> Send </q-item-section>
-            </q-item>
-
-            <q-item clickable v-ripple>
-              <q-item-section avatar>
-                <q-icon name="drafts" />
-              </q-item-section>
-
-              <q-item-section> Drafts </q-item-section>
+              <q-item-section> 설정 </q-item-section>
             </q-item>
           </q-list>
         </q-scroll-area>
@@ -84,7 +88,7 @@
       </q-drawer>
       <q-footer bordered class="bg-white text-primary">
         <q-tabs
-          v-model="tab"
+          v-model="tab_bottom"
           dense
           align="justify"
           class="bg-primary text-white shadow-2"
@@ -138,19 +142,42 @@ export default defineComponent({
       mainRating,
       mainRecommendation,
       mainRecord,
-      tab: ref('home'),
+      tab_bottom: ref('home'),
+      tab_side: ref(null),
+      drawer: ref(false)
+
     };
+  },
+  watch: {
+    tab_bottom: function () {
+      this.tab_side = null
+      switch (this.tab_bottom) {
+        case 'home': this.$router.push('/main/feed'); break;
+        case 'language': this.$router.push('/main/rating'); break;
+        case 'favorite': this.$router.push('/main/recommendation'); break;
+      }
+    },
+    tab_side: function () {
+      this.tab_bottom = null
+      switch (this.tab_side) {
+        case 'contacts': this.$router.push('/main/info/my'); break;
+        case 'diversity_1': this.$router.push('/main/friends'); break;
+        case 'settings': this.$router.push('/main/setting'); break;
+      }
+    }
   },
   data() {
     return {
-      drawer: false,
     };
   },
   mounted() {
-    console.log(this.drawer);
-    this.drawer = false;
-    console.log(this.drawer);
+    console.log(this.$refs.tab_side)
   },
+  methods: {
+    side_tab_click: function (event) {
+      console.log(event)
+    }
+  }
 });
 </script>
 

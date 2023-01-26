@@ -166,7 +166,6 @@ export default defineComponent({
         : (this.password_flag = false);
       if (this.password_flag) {
         this.password_confirm_message = '비밀번호가 일치해요';
-        this.password_submit_confirm = this.password_init;
       } else {
         this.password_confirm_message = '비밀번호가 일치하지 않아요';
       }
@@ -232,7 +231,7 @@ export default defineComponent({
             body: new URLSearchParams({
               table: 'user',
               columns: 'user_id, user_password',
-              values: `'${this.confirm_email}', '${this.password_submit_confirm}'`,
+              values: `'${this.confirm_email}', '${this.password_init}'`,
             }),
           });
           this.$router.push('/');

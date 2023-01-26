@@ -58,8 +58,12 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/main/MainFriendDiary.vue'),
       },
       {
-        path: 'info/my',
+        path: 'diary/my',
         component: () => import('pages/main/MainMyDiary.vue'),
+      },
+      {
+        path: 'setting',
+        component: () => import('pages/main/MainSetting.vue'),
       },
     ],
   },
