@@ -9,7 +9,7 @@
     </q-avatar>
     <p style="text-align: center;">{{image_text}}</p>
     <q-input v-model="user_nickname" label="닉네임을 입력해주세요" />
-    <q-btn color="white" text-color="black" label="계속하기" />
+    <q-btn color="white" text-color="black" label="계속하기" @click="onSubmit"/>
   </q-item-section>
 </template>
 
@@ -21,7 +21,6 @@ export default defineComponent({
   name: 'InitialSignupInfo',
   setup () {
     const $q = useQuasar()
-
     function onRejected (rejectedEntries) {
       // Notify plugin needs to be installed
       // https://quasar.dev/quasar-plugins/notify#Installation
@@ -30,7 +29,6 @@ export default defineComponent({
         message: `${rejectedEntries.length} file(s) did not pass validation constraints`
       })
     }
-
     return {
         onRejected, $q
     }
@@ -41,6 +39,7 @@ export default defineComponent({
       image_text: '아이콘 이미지를 지정해보세요',
       format: String,
       fileName: String,
+      filePathGlobal: String,
       filePath: String,
       user: {},
       user_nickname: ''
@@ -49,11 +48,12 @@ export default defineComponent({
   watch: {
     user_nickname: function () {
       this.fileName = `${this.user_nickname}.${this.format}`
-      this.filePath = `/var/www/html/config/recordImages/${this.fileName}`
+      this.filePath = `config/userImages/${this.fileName}`
+      this.filePathGlobal = `http://localhost:3000/config/userImages/${this.fileName}`
     }
   },
   methods: {
-    async handleFiles(event) {
+    handleFiles: async function (event) {
       // FileReader 인스턴스 생성
       const reader = new FileReader()
       const files = event.target.files
@@ -65,14 +65,48 @@ export default defineComponent({
       // 이미지가 로드가 된 경우
       reader.onload = async (e) => {
         this.image_text = '멋진 이미지에요!'
-        document.getElementById('preview-image').src = String(e.target.result)
+        document.getElementById('preview-image').src = e.target.result
         const idx = (file.name).indexOf('.')
         this.format = ((file.name).substring(idx + 1)).toLowerCase()
-        this.image = String(e.target.result)
+        this.image = e.target.result
       }
     },
-    fileSelect() {
+    fileSelect: function() {
       this.$refs.fileElem.click()
+    },
+    onSubmit: async function () {
+      await fetch('http://127.0.0.1:3000/DAO/UPDATE', {
+        method: "POST",
+        body: new URLSearchParams({
+          table: 'user',
+          set: `user_nickname = '${this.user_nickname}'`,
+          where: `user_id = '${this.$q.cookies.get('user_id')}'`
+        })
+      })
+      await fetch('http://127.0.0.1:3000/DAO/UPDATE', {
+        method: "POST",
+        body: new URLSearchParams({
+          table: 'user',
+          set: `user_image = '${this.filePathGlobal}'`,
+          where: `user_id = '${this.$q.cookies.get('user_id')}'`
+        })
+      })
+      await fetch('http://127.0.0.1:3000/DAO/UPDATE', {
+        method: "POST",
+        body: new URLSearchParams({
+          table: 'user',
+          set: `initial_signin = 1`,
+          where: `user_id = '${this.$q.cookies.get('user_id')}'`
+        })
+      })
+      await fetch('http://127.0.0.1:3000/fileHandler', {
+        method: "POST",
+        body: new URLSearchParams({
+          file: this.image,
+          path: this.filePath
+        })
+      })
+      this.$router.push('/initial/food')
     }
   }
 });

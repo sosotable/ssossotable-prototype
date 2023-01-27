@@ -148,7 +148,6 @@ export default defineComponent({
           where: `user_id = '${this.id}' and user_password = '${this.password}'`
         })
       })).json()
-      console.log(signin_result)
       const user_key = signin_result[0].key
       const user_id = signin_result[0].user_id
       const user_image = signin_result[0].user_nickname
@@ -165,15 +164,18 @@ export default defineComponent({
           this.$q.cookies.set('user_key', user_key, options)
           this.$q.cookies.set('user_id', user_id, options)
           this.$q.cookies.set('auto_sign_in', String(this.value), options)
-          switch (signin_result[0].initial_signin) {
+          switch (parseInt(signin_result[0].initial_signin)) {
             case 0:
               this.$q.cookies.set('user_nickname', user_image, options)
               this.$q.cookies.set('user_image', user_nickname, options)
               this.$router.push('/main/feed')
+              break
             case 1:
               this.$router.push('/initial/food')
+              break
             case 2:
               this.$router.push('/initial/info')
+              break
           }
           break;
       }
