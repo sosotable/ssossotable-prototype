@@ -51,7 +51,7 @@
               ]"
             ></q-input>
             <q-toggle
-              v-model="value"
+              v-model="autoSignIn"
               label="자동로그인"
               keep-color
               checked-icon="check"
@@ -96,88 +96,187 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import EssentialLink from 'components/EssentialLink.vue';
-import axios from 'axios';
-import { useQuasar } from 'quasar'
-const linksList = [
-  {
-    title: 'Github',
-    icon: 'code',
-    link: 'https://github.com/quasarframework',
-  },
-  {
-    title: 'Email',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev',
-  },
-  {
-    title: 'Instagram',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev',
-  },
-];
+import { defineComponent } from 'vue';
+import { useQuasar } from 'quasar';
 
 export default defineComponent({
-
   name: 'SignIn',
-
   components: {},
-
   setup() {
-    const $q = useQuasar()
+    const $q = useQuasar();
+    const cookieOptions = {
+      path: '/',
+      expires: '1h',
+    };
+    $q.loading.show({
+      delay: 400, // ms
+    });
+
+    $q.loading.hide();
     return {
-      essentialLinks: linksList,
-      $q
+      $q,
+      cookieOptions,
     };
   },
   data() {
     return {
       id: '',
       password: '',
-      value: false
+      autoSignIn: false,
     };
   },
+  async mounted() {
+    if (await this.getSessionKey()) {
+      this.$q.loading.show({
+        message:
+          '다시 <b>소소식탁</b> 을 찾아주셔서 감사해요.<br/><span class="text-amber text-italic">언제나 행복하세요!</span>',
+        html: true,
+      });
+      setTimeout(() => {
+        this.$q.loading.hide();
+        this.$router.push('/main/feed');
+      }, 1500);
+    } else {
+      this.$q.loading.show();
+      setTimeout(() => {
+        this.$q.loading.hide();
+        this.$router.push('/main/feed');
+      }, 500);
+    }
+  },
   methods: {
+    /** MARK: 회원가입
+     * */
     onSubmit: async function () {
-      const signin_result= await (await fetch('http://127.0.0.1:3000/DAO/SELECT', {
-        method: "POST",
-        body: new URLSearchParams({
-          columns: '*',
-          table: 'user',
-          where: `user_id = '${this.id}' and user_password = '${this.password}'`
+      const signin_result = await (
+        await fetch('http://127.0.0.1:3000/DAO/SELECT', {
+          method: 'POST',
+          body: new URLSearchParams({
+            columns: '*',
+            table: 'user',
+            where: `user_id = '${this.id}' and user_password = '${this.password}'`,
+          }),
         })
-      })).json()
-      const user_key = signin_result[0].key
-      const user_id = signin_result[0].user_id
-      const user_image = signin_result[0].user_nickname
-      const user_nickname = signin_result[0].user_image
-      const options = {
-        path : '/',
-        expires: '1h'
-      }
+      ).json();
+      const user_key = signin_result[0].key;
+      const user_id = signin_result[0].user_id;
+      const user_image = signin_result[0].user_nickname;
+      const user_nickname = signin_result[0].user_image;
       switch (signin_result.length) {
         case 0:
-          alert('회원 정보를 확인해주세요.')
+          alert('회원 정보를 확인해주세요.');
           break;
         case 1:
-          this.$q.cookies.set('user_key', user_key, options)
-          this.$q.cookies.set('user_id', user_id, options)
-          this.$q.cookies.set('auto_sign_in', String(this.value), options)
+          // MARK: 자동 로그인이 지정되어 있을때만 자동로그인을 등록함
+          this.autoSignIn === true ? await this.setSessionKey(user_key) : false;
+          this.$q.cookies.set('user_key', user_key, this.cookieOptions);
+          this.$q.cookies.set('user_id', user_id, this.cookieOptions);
           switch (parseInt(signin_result[0].initial_signin)) {
             case 0:
-              this.$q.cookies.set('user_nickname', user_image, options)
-              this.$q.cookies.set('user_image', user_nickname, options)
-              this.$router.push('/main/feed')
-              break
+              this.$q.cookies.set(
+                'user_nickname',
+                user_nickname,
+                this.cookieOptions
+              );
+              this.$q.cookies.set('user_image', user_image, this.cookieOptions);
+              this.$router.push('/main/feed');
+              break;
             case 1:
-              this.$router.push('/initial/food')
-              break
+              this.$router.push('/initial/food');
+              break;
             case 2:
-              this.$router.push('/initial/info')
-              break
+              this.$router.push('/initial/info');
+              break;
           }
           break;
+      }
+    },
+    /** MARK: 자동로그인을 위한 세션키 할당
+     * */
+    setSessionKey: async function (user_key: string) {
+      const key = JSON.stringify(crypto.randomUUID())
+        .toUpperCase()
+        .replaceAll('-', '');
+      await fetch('http://127.0.0.1:3000/DAO/INSERT', {
+        method: 'POST',
+        body: new URLSearchParams({
+          table: 'sessions',
+          columns: '`key`, user_key',
+          values: `'${key}', ${user_key}`,
+        }),
+      });
+      this.$q.cookies.set('session_key', key, this.cookieOptions);
+    },
+    /** MARK: index 페이지 입장 시 자동로그인 체크
+     * */
+    getSessionKey: async function () {
+      // MARK: 세션키를 가지고 있다면
+      if (this.$q.cookies.has('session_key')) {
+        // MARK: 만료 일자 검색
+        const expire = await (
+          await fetch('http://127.0.0.1:3000/DAO/SELECT', {
+            method: 'POST',
+            body: new URLSearchParams({
+              columns: '*',
+              table: 'sessions',
+              where: `\`key\` = '${this.$q.cookies.get('session_key')}'`,
+            }),
+          })
+        ).json();
+        // MARK: 세션 키 만료일자가 현재 시각보다 이전일경우 세션키 만료
+        if (new Date(expire[0].expire) < new Date(Date.now())) {
+          await fetch('http://127.0.0.1:3000/DAO/DETETE', {
+            method: 'POST',
+            body: new URLSearchParams({
+              from: 'sessions',
+              where: `\`key\` = '${this.$q.cookies.get('session_key')}'`,
+            }),
+          });
+          this.$q.cookies.remove('session_key');
+        }
+        // MARK: 세션 키 만료일자가 현재 시각보다 이후일경우 자동로그인 등록
+        else {
+          const auto_signin_result = await (
+            await fetch('http://127.0.0.1:3000/DAO/SELECT', {
+              method: 'POST',
+              body: new URLSearchParams({
+                columns: '*',
+                table: 'user',
+                where: `\`key\` in ( SELECT user_key FROM sessions WHERE \`key\` = '${this.$q.cookies.get(
+                  'session_key'
+                )}')`,
+              }),
+            })
+          ).json();
+          this.$q.cookies.set(
+            'user_key',
+            this.$q.cookies.get('user_key'),
+            this.cookieOptions
+          );
+          this.$q.cookies.set(
+            'user_id',
+            this.$q.cookies.get('user_id'),
+            this.cookieOptions
+          );
+          this.$q.cookies.set(
+            'user_nickname',
+            this.$q.cookies.get('user_nickname'),
+            this.cookieOptions
+          );
+          this.$q.cookies.set(
+            'user_image',
+            this.$q.cookies.get('user_image'),
+            this.cookieOptions
+          );
+          this.$q.cookies.set(
+            'session_key',
+            this.$q.cookies.get('session_key'),
+            this.cookieOptions
+          );
+          return true;
+        }
+      } else {
+        return false;
       }
     },
     onReset: function () {
@@ -189,6 +288,9 @@ export default defineComponent({
     normalSignup: function () {
       this.$router.push('/signup/normal');
     },
-  }
+    rand: function (max: number, min: number) {
+      return Math.floor(Math.random() * (max - min) + min);
+    },
+  },
 });
 </script>

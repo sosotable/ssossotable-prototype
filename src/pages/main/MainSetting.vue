@@ -1,17 +1,13 @@
-<template>
-Mainsetting
-</template>
+<template>Mainsetting</template>
 
 <script>
 import { defineComponent, ref } from 'vue';
-export default defineComponent( {
+export default defineComponent({
   name: 'MainSetting',
   setup() {
     return {};
   },
-})
+});
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

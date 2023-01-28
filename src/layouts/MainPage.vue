@@ -41,7 +41,7 @@
               @click="tab_side = 'contacts'"
             >
               <q-item-section avatar>
-                <q-icon name="contacts"/>
+                <q-icon name="contacts" />
               </q-item-section>
               <q-item-section> 내 정보 </q-item-section>
             </q-item>
@@ -144,40 +144,50 @@ export default defineComponent({
       mainRecord,
       tab_bottom: ref('home'),
       tab_side: ref(null),
-      drawer: ref(false)
-
+      drawer: ref(false),
     };
   },
   watch: {
     tab_bottom: function () {
-      this.tab_side = null
+      this.tab_side = null;
       switch (this.tab_bottom) {
-        case 'home': this.$router.push('/main/feed'); break;
-        case 'language': this.$router.push('/main/rating'); break;
-        case 'favorite': this.$router.push('/main/recommendation'); break;
+        case 'home':
+          this.$router.push('/main/feed');
+          break;
+        case 'language':
+          this.$router.push('/main/rating');
+          break;
+        case 'favorite':
+          this.$router.push('/main/recommendation');
+          break;
       }
     },
     tab_side: function () {
-      this.tab_bottom = null
+      this.tab_bottom = null;
       switch (this.tab_side) {
-        case 'contacts': this.$router.push('/main/info/my'); break;
-        case 'diversity_1': this.$router.push('/main/friends'); break;
-        case 'settings': this.$router.push('/main/setting'); break;
+        case 'contacts':
+          this.$router.push('/main/info/my');
+          break;
+        case 'diversity_1':
+          this.$router.push('/main/friends');
+          break;
+        case 'settings':
+          this.$router.push('/main/setting');
+          break;
       }
-    }
+    },
   },
   data() {
-    return {
-    };
+    return {};
   },
   mounted() {
-    console.log(this.$refs.tab_side)
+    console.log(this.$refs.tab_side);
   },
   methods: {
     side_tab_click: function (event) {
-      console.log(event)
-    }
-  }
+      console.log(event);
+    },
+  },
 });
 </script>
 

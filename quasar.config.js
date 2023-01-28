@@ -50,7 +50,7 @@ module.exports = configure(function (/* ctx */) {
     build: {
       // MARK: add env
       env: {
-        KAKAOMAP_KEY: 'd58dfb00f33ea42bd863ce021bbe2abf'
+        KAKAOMAP_KEY: 'd58dfb00f33ea42bd863ce021bbe2abf',
       },
       target: {
         browser: ['es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1'],
@@ -102,9 +102,7 @@ module.exports = configure(function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: [
-        'Cookies'
-      ],
+      plugins: ['Cookies', 'Loading'],
     },
 
     // animations: 'all', // --- includes all animations

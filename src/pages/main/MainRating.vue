@@ -3,16 +3,18 @@ import RatingStars from 'components/RatingStars.vue';
 </script>
 <template>
   <h5 style="text-align: center">당신의 취향을 추가해보세요</h5>
-  <div style="overflow: auto;">
+  <div style="overflow: auto">
     <template v-for="(item, idx) in items" v-bind:key="idx">
       <Transition>
         <div class="row" v-if="item.show">
           <div class="box">
             <img class="box-image" :src="item.image" />
           </div>
-          <div class="food-info" style="margin: 10px 0;">
+          <div class="food-info" style="margin: 10px 0">
             <div>
-              <p style="margin: 0!important; font-size: 20px;">{{ item.name }}</p>
+              <p style="margin: 0 !important; font-size: 20px">
+                {{ item.name }}
+              </p>
             </div>
             <RatingStars
               v-on:rated="rated"
@@ -36,30 +38,33 @@ export default defineComponent({
   },
   data() {
     return {
-      items: {}
-    }
+      items: {},
+    };
   },
   async mounted() {
-    const foodInfo = await (await fetch('http://127.0.0.1:3000/DAO/SELECT', {
-      method: "POST",
-      body: new URLSearchParams({
-        columns: '*',
-        table: 'food',
-        where: `id not in (SELECT food_id `+
-                 `FROM rating, food `+
-                 `WHERE rating.user_id = ${this.$q.cookies.get('user_key')})`
+    const foodInfo = await (
+      await fetch('http://127.0.0.1:3000/DAO/SELECT', {
+        method: 'POST',
+        body: new URLSearchParams({
+          columns: '*',
+          table: 'food',
+          where:
+            `id not in (SELECT food_id ` +
+            `FROM rating, food ` +
+            `WHERE rating.user_id = ${this.$q.cookies.get('user_key')})`,
+        }),
       })
-    })).json()
-    console.log(foodInfo)
-    for(let i = 0; i < foodInfo.length; i++) {
+    ).json();
+    console.log(foodInfo);
+    for (let i = 0; i < foodInfo.length; i++) {
       this.items[foodInfo[i].id] = {
         id: foodInfo[i].id,
         name: foodInfo[i].name,
         image: foodInfo[i].image,
-        show: true
-      }
+        show: true,
+      };
     }
-  }
+  },
 });
 </script>
 
