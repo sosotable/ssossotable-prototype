@@ -1,111 +1,109 @@
 <template>
-  <div class="q-pa-md">
-    <q-layout
-      view="lHh lpr lFf"
-      container
-      style="height: 400px"
-      class="shadow-2 rounded-borders"
-    >
-      <q-header bordered class="bg-white text-primary">
-        <q-toolbar class="bg-primary glossy text-white">
-          <q-btn
-            flat
-            @click="drawer = !drawer"
-            round
-            dense
-            icon="menu"
-            class="q-mr-sm"
-          />
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
-          </q-avatar>
+  <q-layout
+    view="lHh lpr lFf"
+    container
+    style="height: 400px"
+    class="shadow-2 rounded-borders"
+  >
+    <q-header bordered class="bg-white text-primary">
+      <q-toolbar class="bg-primary glossy text-white">
+        <q-btn
+          flat
+          @click="drawer = !drawer"
+          round
+          dense
+          icon="menu"
+          class="q-mr-sm"
+        />
+        <q-avatar>
+          <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
+        </q-avatar>
 
-          <q-toolbar-title>소소식탁</q-toolbar-title>
+        <q-toolbar-title>소소식탁</q-toolbar-title>
 
-          <q-btn flat round dense icon="notifications" />
-        </q-toolbar>
-      </q-header>
-      <q-drawer v-model="drawer" show-if-above :width="200" :breakpoint="400">
-        <q-scroll-area
-          style="
+        <q-btn flat round dense icon="notifications" />
+      </q-toolbar>
+    </q-header>
+    <q-drawer v-model="drawer" show-if-above :width="200" :breakpoint="400">
+      <q-scroll-area
+        style="
             height: calc(100% - 150px);
             margin-top: 150px;
             border-right: 1px solid #ddd;
           "
-        >
-          <q-list padding>
-            <q-item
-              clickable
-              v-ripple
-              :active="tab_side === 'contacts'"
-              @click="tab_side = 'contacts'"
-            >
-              <q-item-section avatar>
-                <q-icon name="contacts" />
-              </q-item-section>
-              <q-item-section> 내 정보 </q-item-section>
-            </q-item>
+      >
+        <q-list padding>
+          <q-item
+            clickable
+            v-ripple
+            :active="tab_side === 'contacts'"
+            @click="tab_side = 'contacts'"
+          >
+            <q-item-section avatar>
+              <q-icon name="contacts" />
+            </q-item-section>
+            <q-item-section> 내 정보 </q-item-section>
+          </q-item>
 
-            <q-item
-              clickable
-              v-ripple
-              :active="tab_side === 'diversity_1'"
-              @click="tab_side = 'diversity_1'"
-            >
-              <q-item-section avatar>
-                <q-icon name="diversity_1" />
-              </q-item-section>
-              <q-item-section> 친구 </q-item-section>
-            </q-item>
+          <q-item
+            clickable
+            v-ripple
+            :active="tab_side === 'diversity_1'"
+            @click="tab_side = 'diversity_1'"
+          >
+            <q-item-section avatar>
+              <q-icon name="diversity_1" />
+            </q-item-section>
+            <q-item-section> 친구 </q-item-section>
+          </q-item>
 
-            <q-item
-              clickable
-              v-ripple
-              :active="tab_side === 'settings'"
-              @click="tab_side = 'settings'"
-            >
-              <q-item-section avatar>
-                <q-icon name="settings" />
-              </q-item-section>
-              <q-item-section> 설정 </q-item-section>
-            </q-item>
-          </q-list>
-        </q-scroll-area>
+          <q-item
+            clickable
+            v-ripple
+            :active="tab_side === 'settings'"
+            @click="tab_side = 'settings'"
+          >
+            <q-item-section avatar>
+              <q-icon name="settings" />
+            </q-item-section>
+            <q-item-section> 설정 </q-item-section>
+          </q-item>
+        </q-list>
+      </q-scroll-area>
 
-        <q-img
-          class="absolute-top"
-          src="https://cdn.quasar.dev/img/material.png"
-          style="height: 150px"
-        >
-          <div class="absolute-bottom bg-transparent">
-            <q-avatar size="56px" class="q-mb-sm">
-              <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-            </q-avatar>
-            <div class="text-weight-bold">Razvan Stoenescu</div>
-            <div>@rstoenescu</div>
-          </div>
-        </q-img>
-      </q-drawer>
-      <q-footer bordered class="bg-white text-primary">
-        <q-tabs
-          v-model="tab_bottom"
-          dense
-          align="justify"
-          class="bg-primary text-white shadow-2"
-          :breakpoint="0"
-        >
-          <q-tab name="favorite" icon="favorite" />
-          <q-tab name="home" icon="home" />
-          <q-tab name="language" icon="language" />
-        </q-tabs>
-      </q-footer>
-      <q-page-container>
-        <q-page class="q-pa-md">
-          <router-view></router-view>
-        </q-page>
-      </q-page-container>
-    </q-layout>
-  </div>
+      <q-img
+        class="absolute-top"
+        src="https://cdn.quasar.dev/img/material.png"
+        style="height: 150px"
+      >
+        <div class="absolute-bottom bg-transparent">
+          <q-avatar size="56px" class="q-mb-sm">
+            <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+          </q-avatar>
+          <div class="text-weight-bold">Razvan Stoenescu</div>
+          <div>@rstoenescu</div>
+        </div>
+      </q-img>
+    </q-drawer>
+    <q-footer bordered class="bg-white text-primary">
+      <q-tabs
+        v-model="tab_bottom"
+        dense
+        align="justify"
+        class="bg-primary text-white shadow-2"
+        :breakpoint="0"
+      >
+        <q-tab name="favorite" icon="favorite" />
+        <q-tab name="home" icon="home" />
+        <q-tab name="language" icon="language" />
+      </q-tabs>
+    </q-footer>
+    <q-page-container>
+      <q-page>
+        <router-view></router-view>
+      </q-page>
+    </q-page-container>
+  </q-layout>
 </template>
 
 <script>

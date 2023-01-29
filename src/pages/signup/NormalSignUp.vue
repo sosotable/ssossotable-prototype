@@ -89,7 +89,9 @@ export default defineComponent({
   name: 'NormalSignUp',
   setup() {
     // MARK: 소켓 연결
-    const socket = io('http://127.0.0.1:3000');
+    const socket = io('http://localhost:3000', {
+      withCredentials: true
+    });
     return {
       socket,
       dense: ref(false),

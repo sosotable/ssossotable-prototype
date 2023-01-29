@@ -140,7 +140,7 @@ export default defineComponent({
       this.$q.loading.show();
       setTimeout(() => {
         this.$q.loading.hide();
-        this.$router.push('/main/feed');
+        this.$router.push('/');
       }, 500);
     }
   },
@@ -233,6 +233,7 @@ export default defineComponent({
             }),
           });
           this.$q.cookies.remove('session_key');
+          return false
         }
         // MARK: 세션 키 만료일자가 현재 시각보다 이후일경우 자동로그인 등록
         else {
