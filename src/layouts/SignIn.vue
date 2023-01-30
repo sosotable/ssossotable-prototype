@@ -106,7 +106,7 @@ export default defineComponent({
     const $q = useQuasar();
     const cookieOptions = {
       path: '/',
-      expires: '1h',
+      expires: '24h',
     };
     $q.loading.show({
       delay: 400, // ms
@@ -126,6 +126,7 @@ export default defineComponent({
     };
   },
   async mounted() {
+    console.log(this.$q.cookies.getAll())
     if (await this.getSessionKey()) {
       this.$q.loading.show({
         message:
@@ -160,8 +161,8 @@ export default defineComponent({
       ).json();
       const user_key = signin_result[0].key;
       const user_id = signin_result[0].user_id;
-      const user_image = signin_result[0].user_nickname;
-      const user_nickname = signin_result[0].user_image;
+      const user_image = signin_result[0].user_image;
+      const user_nickname = signin_result[0].user_nickname;
       switch (signin_result.length) {
         case 0:
           alert('회원 정보를 확인해주세요.');

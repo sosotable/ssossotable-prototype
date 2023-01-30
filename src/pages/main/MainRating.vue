@@ -6,8 +6,8 @@ import RatingStars from 'components/RatingStars.vue';
   <div style="overflow: auto">
     <template v-for="(item, idx) in items" v-bind:key="idx">
       <Transition>
-        <div class="row" v-if="item.show">
-          <div class="box">
+        <div class="row justify-center" v-if="item.show">
+          <div class="box" style="margin: 10px;">
             <img class="box-image" :src="item.image" />
           </div>
           <div class="food-info" style="margin: 10px 0">

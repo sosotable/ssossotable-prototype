@@ -61,21 +61,22 @@ export default defineComponent({
   watch: {
     user_nickname: function () {
       this.fileName = `${this.user_nickname}.${this.format}`;
-      this.filePath = `config/userImages/${this.fileName}`;
-      this.filePathGlobal = `http://localhost:3000/config/userImages/${this.fileName}`;
+      this.filePath = `${process.env.SERVER_PATH}\\public\\images\\userImages\\${this.fileName}`;
+      // MARK: uri 인코딩
+      this.filePathGlobal = `http://localhost:3000/images/userImages/`+encodeURIComponent(this.fileName)
     },
   },
   methods: {
     handleFiles: async function (event) {
-      // FileReader 인스턴스 생성
+      // MARK: FileReader 인스턴스 생성
       const reader = new FileReader();
       const files = event.target.files;
       const file = files[0];
-      // 이미지 파일 여부 검사
+      // MARK: 이미지 파일 여부 검사
       if (!file.type.startsWith('image/')) return;
-      // reader가 이미지 읽도록 하기
+      // MARK: reader가 이미지 읽도록 하기
       reader.readAsDataURL(file);
-      // 이미지가 로드가 된 경우
+      // MARK: 이미지가 로드가 된 경우
       reader.onload = async (e) => {
         this.image_text = '멋진 이미지에요!';
         document.getElementById('preview-image').src = e.target.result;
@@ -117,6 +118,7 @@ export default defineComponent({
         body: new URLSearchParams({
           file: this.image,
           path: this.filePath,
+          format: this.format
         }),
       });
       this.$router.push('/initial/food');

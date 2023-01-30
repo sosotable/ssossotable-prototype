@@ -15,12 +15,12 @@
           icon="menu"
           class="q-mr-sm"
         />
-        <q-avatar>
-          <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
-        </q-avatar>
 
-        <q-toolbar-title>소소식탁</q-toolbar-title>
-
+        <router-link to="/main/feed" style="margin-right: auto; ">
+          <q-avatar>
+            <img src="/src/assets/logo.png" />
+          </q-avatar>
+        </router-link>
         <q-btn flat round dense icon="notifications" />
       </q-toolbar>
     </q-header>
@@ -78,10 +78,10 @@
       >
         <div class="absolute-bottom bg-transparent">
           <q-avatar size="56px" class="q-mb-sm">
-            <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+            <img :src="this.$q.cookies.get('user_image')" />
           </q-avatar>
-          <div class="text-weight-bold">Razvan Stoenescu</div>
-          <div>@rstoenescu</div>
+          <div class="text-weight-bold">{{this.$q.cookies.get('user_nickname')}}</div>
+          <div>{{this.$q.cookies.get('user_id')}}</div>
         </div>
       </q-img>
     </q-drawer>
@@ -108,6 +108,7 @@
 
 <script>
 import { defineComponent, ref } from 'vue';
+import { useQuasar } from 'quasar';
 import MainFeed from 'pages/main/MainFeed.vue';
 import MainFriendDiary from 'pages/main/MainFriendDiary.vue';
 import MainFriendInfo from 'pages/main/MainFriendInfo.vue';
@@ -121,6 +122,7 @@ import MainRecord from 'pages/main/MainRecord.vue';
 export default defineComponent({
   name: 'MainPage',
   setup() {
+    const $q = useQuasar();
     const mainFeed = ref < MainFeed > null;
     const mainFriendDiary = ref < MainFriendDiary > null;
     const mainFriendInfo = ref < MainFriendInfo > null;
@@ -143,6 +145,7 @@ export default defineComponent({
       tab_bottom: ref('home'),
       tab_side: ref(null),
       drawer: ref(false),
+      $q
     };
   },
   watch: {

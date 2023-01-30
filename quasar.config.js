@@ -51,6 +51,7 @@ module.exports = configure(function (/* ctx */) {
       // MARK: add env
       env: {
         KAKAOMAP_KEY: 'd58dfb00f33ea42bd863ce021bbe2abf',
+        SERVER_PATH: 'C:\\Users\\valtin\\Desktop\\project\\ssossotable-server'
       },
       target: {
         browser: ['es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1'],
