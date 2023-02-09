@@ -64,9 +64,21 @@
             @click="tab_side = 'settings'"
           >
             <q-item-section avatar>
-              <q-icon name="settings" />
+              <q-icon name="logout" />
             </q-item-section>
             <q-item-section> 설정 </q-item-section>
+          </q-item>
+          <q-item
+            clickable
+            v-ripple
+            :active="tab_side === 'logout'"
+            @click="tab_side = 'logout'"
+            class='fixed-bottom'
+          >
+            <q-item-section avatar>
+              <q-icon name="logout" />
+            </q-item-section>
+            <q-item-section> 로그아웃 </q-item-section>
           </q-item>
         </q-list>
       </q-scroll-area>
@@ -175,6 +187,9 @@ export default defineComponent({
         case 'settings':
           this.$router.push('/main/setting');
           break;
+        case 'logout':
+          this.logout()
+          break;
       }
     },
   },
@@ -182,12 +197,26 @@ export default defineComponent({
     return {};
   },
   mounted() {
-    console.log(this.$refs.tab_side);
+    //
   },
   methods: {
     side_tab_click: function (event) {
       console.log(event);
     },
+    logout: async function() {
+      await fetch('http://127.0.0.1:3000/DAO/DELETE', {
+        method: 'POST',
+        body: new URLSearchParams({
+          table: 'sessions',
+          where: `user_key in (
+          SELECT \`key\`
+          FROM user
+          WHERE user_id = '${this.$q.cookies.get('user_id')}')`
+        }),
+      })
+      this.$q.cookies.remove('session_key')
+      this.$router.push('/')
+    }
   },
 });
 </script>

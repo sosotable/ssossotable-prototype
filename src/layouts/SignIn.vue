@@ -15,7 +15,7 @@
       </q-header>
       <footer class="fixed-bottom" style="text-align: center">
         <span>ssosso.table 2022-2023</span>
-        <q-avatar style="margin: 10px"
+        <q-avatar style="margin: 10px" size='20px'
           ><img src="../assets/logo.png"
         /></q-avatar>
       </footer>
