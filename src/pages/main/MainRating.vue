@@ -55,7 +55,6 @@ export default defineComponent({
         }),
       })
     ).json();
-    console.log(foodInfo);
     for (let i = 0; i < foodInfo.length; i++) {
       this.items[foodInfo[i].id] = {
         id: foodInfo[i].id,

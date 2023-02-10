@@ -21,11 +21,30 @@ export default defineComponent({
     width: String,
     height: String,
     id: Number,
+    rating: {
+      type: Number,
+      default: 0
+    },
+    static: {
+      type: Boolean,
+      default: false
+    }
   },
   watch: {
     rating() {
       this.set(this.rating);
     },
+  },
+  mounted() {
+    if(this.rating !== 0) {
+      for (let i = 0; i < this.rating; i++) {
+        if (i % 2 === 0) {
+          this.rating_stars[i].src = this.rating_stars_after.left;
+        } else {
+          this.rating_stars[i].src = this.rating_stars_after.right;
+        }
+      }
+    }
   },
   data() {
     return {
@@ -58,6 +77,7 @@ export default defineComponent({
   },
   methods: {
     async set(rating) {
+      if(this.rating > 0) return
       this.$emit('rated', rating, this.id);
       this.clear();
       for (let i = 0; i < rating; i++) {

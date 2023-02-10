@@ -1,5 +1,7 @@
+<script setup>
+import RatingStars from 'components/RatingStars.vue';
+</script>
 <template>
-
   <div class="column">
     <q-card class="column content-center" style="text-align: center;">
       <q-avatar rounded size="180px">
@@ -59,22 +61,58 @@
           </template>
         </div>
       </div>
-      <q-btn type="button" @click="fileSelect" style="background: goldenrod; color: white" label="평가한 음식" />
+      <q-btn type="button" @click="modal = true" style="background: goldenrod; color: white" label="평가한 음식" />
     </q-card>
+    <q-dialog v-model="modal">
+      <q-card>
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">내 음식</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+
+        <q-card-section>
+          <div style="overflow: auto">
+            <template v-for="(item, idx) in ratingInfo" v-bind:key="idx">
+              <div class="row justify-center">
+                <div class="box" style="margin: 10px;">
+                  <img class="box-image" :src="item.image" />
+                </div>
+                <div class="food-info" style="margin: 10px 0">
+                  <div>
+                    <p style="margin: 0 !important; font-size: 14px">
+                      {{ item.name }}
+                    </p>
+                  </div>
+                  <RatingStars
+                    :id="item.id"
+                    :rating='item.rating'
+                    :static='true'
+                    width="12px"
+                    height="24px"
+                  ></RatingStars>
+                </div>
+              </div>
+            </template>
+          </div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
 <script>
 import { defineComponent, ref } from 'vue';
 import { useQuasar } from 'quasar';
+
 export default defineComponent({
   name: 'MainMyInfo',
   setup() {
     const $q = useQuasar()
     return {
       $q,
-    };
 
+    };
   },
   data() {
     return {
@@ -82,7 +120,9 @@ export default defineComponent({
       image: '',
       fileName: '',
       filePath: '',
-      filePathGlobal: ''
+      filePathGlobal: '',
+      modal: ref(false),
+      ratingInfo: {}
     }
   },
   methods: {
@@ -135,9 +175,37 @@ export default defineComponent({
   computed: {
   },
   async mounted() {
-    console.log(this.$q.cookies.get('user_image'))
+    const my_ratings = await (
+      await fetch('http://127.0.0.1:3000/DAO/SELECT', {
+        method: 'POST',
+        body: new URLSearchParams({
+          columns: 'id, rating, name, image',
+          table: 'rating,food',
+          where: `rating.food_id = food.id and rating.user_id = ${this.$q.cookies.get('user_key')}`,
+        }),
+      })
+    ).json();
+    my_ratings.forEach((my_rating) => {
+      this.ratingInfo[my_rating.id] = {
+        id: my_rating.id,
+        rating: my_rating.rating,
+        name: my_rating.name,
+        image: my_rating.image
+      }
+    })
   }
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.box {
+  width: 25%;
+  border-radius: 20%;
+  overflow: hidden;
+}
+.box-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+</style>
