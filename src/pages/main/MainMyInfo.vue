@@ -19,9 +19,179 @@ import RatingStars from 'components/RatingStars.vue';
   </div>
   <div>
     <q-card class="column content-center">
-      <div id="high-rating">
-        <span style="display:block;">높은 점수를 준 음식들</span>
-        <div id="high-rating-holder" >
+      <q-scroll-area style='width: 100%; height: 150px;'>
+        <span style='display:block!important;'>높은 점수를 준 음식들</span>
+        <div id="high-rating-holder" class='no-wrap row' style='max-width: 100%; overflow-x: auto'>
+          <div style='margin: 5px;'>
+            <div>
+              <div>
+                <img
+                  src="http://www.cheftruck.kr/data/editor/1901/953aaf28c9dd17d24fede08939e64dae_1548412729_2913.JPG"
+                  alt="..."
+                  style='width: 60px;'
+                />
+              </div>
+            </div>
+            <span style="display: block;">야채곱창</span>
+            <rating-stars
+              :rating='10'
+              :static='true'
+              width="6px"
+              height="12px"></rating-stars>
+          </div>
+          <div style='margin: 5px;'>
+            <div>
+              <div>
+                <img
+                  src="http://www.cheftruck.kr/data/editor/1901/953aaf28c9dd17d24fede08939e64dae_1548412729_2913.JPG"
+                  alt="..."
+                  style='width: 60px;'
+                />
+              </div>
+            </div>
+            <span style="display: block;">야채곱창</span>
+            <rating-stars
+              :rating='10'
+              :static='true'
+              width="6px"
+              height="12px"></rating-stars>
+          </div>
+          <div style='margin: 5px;'>
+            <div>
+              <div>
+                <img
+                  src="http://www.cheftruck.kr/data/editor/1901/953aaf28c9dd17d24fede08939e64dae_1548412729_2913.JPG"
+                  alt="..."
+                  style='width: 60px;'
+                />
+              </div>
+            </div>
+            <span style="display: block;">야채곱창</span>
+            <rating-stars
+              :rating='10'
+              :static='true'
+              width="6px"
+              height="12px"></rating-stars>
+          </div>
+          <div style='margin: 5px;'>
+            <div>
+              <div>
+                <img
+                  src="http://www.cheftruck.kr/data/editor/1901/953aaf28c9dd17d24fede08939e64dae_1548412729_2913.JPG"
+                  alt="..."
+                  style='width: 60px;'
+                />
+              </div>
+            </div>
+            <span style="display: block;">야채곱창</span>
+            <rating-stars
+              :rating='10'
+              :static='true'
+              width="6px"
+              height="12px"></rating-stars>
+          </div>
+          <div style='margin: 5px;'>
+            <div>
+              <div>
+                <img
+                  src="http://www.cheftruck.kr/data/editor/1901/953aaf28c9dd17d24fede08939e64dae_1548412729_2913.JPG"
+                  alt="..."
+                  style='width: 60px;'
+                />
+              </div>
+            </div>
+            <span style="display: block;">야채곱창</span>
+            <rating-stars
+              :rating='10'
+              :static='true'
+              width="6px"
+              height="12px"></rating-stars>
+          </div>
+          <div style='margin: 5px;'>
+            <div>
+              <div>
+                <img
+                  src="http://www.cheftruck.kr/data/editor/1901/953aaf28c9dd17d24fede08939e64dae_1548412729_2913.JPG"
+                  alt="..."
+                  style='width: 60px;'
+                />
+              </div>
+            </div>
+            <span style="display: block;">야채곱창</span>
+            <rating-stars
+              :rating='10'
+              :static='true'
+              width="6px"
+              height="12px"></rating-stars>
+          </div>
+          <div style='margin: 5px;'>
+            <div>
+              <div>
+                <img
+                  src="http://www.cheftruck.kr/data/editor/1901/953aaf28c9dd17d24fede08939e64dae_1548412729_2913.JPG"
+                  alt="..."
+                  style='width: 60px;'
+                />
+              </div>
+            </div>
+            <span style="display: block;">야채곱창</span>
+            <rating-stars
+              :rating='10'
+              :static='true'
+              width="6px"
+              height="12px"></rating-stars>
+          </div>
+          <div style='margin: 5px;'>
+            <div>
+              <div>
+                <img
+                  src="http://www.cheftruck.kr/data/editor/1901/953aaf28c9dd17d24fede08939e64dae_1548412729_2913.JPG"
+                  alt="..."
+                  style='width: 60px;'
+                />
+              </div>
+            </div>
+            <span style="display: block;">야채곱창</span>
+            <rating-stars
+              :rating='10'
+              :static='true'
+              width="6px"
+              height="12px"></rating-stars>
+          </div>
+          <div style='margin: 5px;'>
+            <div>
+              <div>
+                <img
+                  src="http://www.cheftruck.kr/data/editor/1901/953aaf28c9dd17d24fede08939e64dae_1548412729_2913.JPG"
+                  alt="..."
+                  style='width: 60px;'
+                />
+              </div>
+            </div>
+            <span style="display: block;">야채곱창</span>
+            <rating-stars
+              :rating='10'
+              :static='true'
+              width="6px"
+              height="12px"></rating-stars>
+          </div>
+          <div style='margin: 5px;'>
+            <div>
+              <div>
+                <img
+                  src="http://www.cheftruck.kr/data/editor/1901/953aaf28c9dd17d24fede08939e64dae_1548412729_2913.JPG"
+                  alt="..."
+                  style='width: 60px;'
+                />
+              </div>
+            </div>
+            <span style="display: block;">야채곱창</span>
+            <rating-stars
+              :rating='10'
+              :static='true'
+              width="6px"
+              height="12px"></rating-stars>
+          </div>
           <template v-for="high_rating in high_ratings" v-bind:key="high_rating">
             <div>
               <div>
@@ -39,10 +209,180 @@ import RatingStars from 'components/RatingStars.vue';
             </div>
           </template>
         </div>
-      </div>
-      <div id="low-rating" >
+      </q-scroll-area>
+      <q-scroll-area style='width: 100%; height: 150px;'>
         <span style="display:block;">낮은 점수를 준 음식들</span>
-        <div id="low-rating-holder" class="rating-view d-flex">
+        <div id="low-rating-holder" class='no-wrap row' style='max-width: 100%; overflow-x: auto'>
+          <div style='margin: 5px;'>
+            <div>
+              <div>
+                <img
+                  src="http://berlinreport.com/data/file/essen/thumb-1351197962_n7SiqPsj_9c6edaeccdff753b8e1986f95e429e07a7037495_800x450.jpg"
+                  alt="..."
+                  style='width: 60px;'
+                />
+              </div>
+            </div>
+            <span style="display: block;">가지볶음</span>
+            <rating-stars
+              :rating='1'
+              :static='true'
+              width="6px"
+              height="12px"></rating-stars>
+          </div>
+          <div style='margin: 5px;'>
+            <div>
+              <div>
+                <img
+                  src="http://berlinreport.com/data/file/essen/thumb-1351197962_n7SiqPsj_9c6edaeccdff753b8e1986f95e429e07a7037495_800x450.jpg"
+                  alt="..."
+                  style='width: 60px;'
+                />
+              </div>
+            </div>
+            <span style="display: block;">가지볶음</span>
+            <rating-stars
+              :rating='1'
+              :static='true'
+              width="6px"
+              height="12px"></rating-stars>
+          </div>
+          <div style='margin: 5px;'>
+            <div>
+              <div>
+                <img
+                  src="http://berlinreport.com/data/file/essen/thumb-1351197962_n7SiqPsj_9c6edaeccdff753b8e1986f95e429e07a7037495_800x450.jpg"
+                  alt="..."
+                  style='width: 60px;'
+                />
+              </div>
+            </div>
+            <span style="display: block;">가지볶음</span>
+            <rating-stars
+              :rating='1'
+              :static='true'
+              width="6px"
+              height="12px"></rating-stars>
+          </div>
+          <div style='margin: 5px;'>
+            <div>
+              <div>
+                <img
+                  src="http://berlinreport.com/data/file/essen/thumb-1351197962_n7SiqPsj_9c6edaeccdff753b8e1986f95e429e07a7037495_800x450.jpg"
+                  alt="..."
+                  style='width: 60px;'
+                />
+              </div>
+            </div>
+            <span style="display: block;">가지볶음</span>
+            <rating-stars
+              :rating='1'
+              :static='true'
+              width="6px"
+              height="12px"></rating-stars>
+          </div>
+          <div style='margin: 5px;'>
+            <div>
+              <div>
+                <img
+                  src="http://berlinreport.com/data/file/essen/thumb-1351197962_n7SiqPsj_9c6edaeccdff753b8e1986f95e429e07a7037495_800x450.jpg"
+                  alt="..."
+                  style='width: 60px;'
+                />
+              </div>
+            </div>
+            <span style="display: block;">가지볶음</span>
+            <rating-stars
+              :rating='1'
+              :static='true'
+              width="6px"
+              height="12px"></rating-stars>
+          </div>
+          <div style='margin: 5px;'>
+            <div>
+              <div>
+                <img
+                  src="http://berlinreport.com/data/file/essen/thumb-1351197962_n7SiqPsj_9c6edaeccdff753b8e1986f95e429e07a7037495_800x450.jpg"
+                  alt="..."
+                  style='width: 60px;'
+                />
+              </div>
+            </div>
+            <span style="display: block;">가지볶음</span>
+            <rating-stars
+              :rating='1'
+              :static='true'
+              width="6px"
+              height="12px"></rating-stars>
+          </div>
+          <div style='margin: 5px;'>
+            <div>
+              <div>
+                <img
+                  src="http://berlinreport.com/data/file/essen/thumb-1351197962_n7SiqPsj_9c6edaeccdff753b8e1986f95e429e07a7037495_800x450.jpg"
+                  alt="..."
+                  style='width: 60px;'
+                />
+              </div>
+            </div>
+            <span style="display: block;">가지볶음</span>
+            <rating-stars
+              :rating='1'
+              :static='true'
+              width="6px"
+              height="12px"></rating-stars>
+          </div>
+          <div style='margin: 5px;'>
+            <div>
+              <div>
+                <img
+                  src="http://berlinreport.com/data/file/essen/thumb-1351197962_n7SiqPsj_9c6edaeccdff753b8e1986f95e429e07a7037495_800x450.jpg"
+                  alt="..."
+                  style='width: 60px;'
+                />
+              </div>
+            </div>
+            <span style="display: block;">가지볶음</span>
+            <rating-stars
+              :rating='1'
+              :static='true'
+              width="6px"
+              height="12px"></rating-stars>
+          </div>
+          <div style='margin: 5px;'>
+            <div>
+              <div>
+                <img
+                  src="http://berlinreport.com/data/file/essen/thumb-1351197962_n7SiqPsj_9c6edaeccdff753b8e1986f95e429e07a7037495_800x450.jpg"
+                  alt="..."
+                  style='width: 60px;'
+                />
+              </div>
+            </div>
+            <span style="display: block;">가지볶음</span>
+            <rating-stars
+              :rating='1'
+              :static='true'
+              width="6px"
+              height="12px"></rating-stars>
+          </div>
+          <div style='margin: 5px;'>
+            <div>
+              <div>
+                <img
+                  src="http://berlinreport.com/data/file/essen/thumb-1351197962_n7SiqPsj_9c6edaeccdff753b8e1986f95e429e07a7037495_800x450.jpg"
+                  alt="..."
+                  style='width: 60px;'
+                />
+              </div>
+            </div>
+            <span style="display: block;">가지볶음</span>
+            <rating-stars
+              :rating='1'
+              :static='true'
+              width="6px"
+              height="12px"></rating-stars>
+          </div>
           <template v-for="low_rating in low_ratings" v-bind:key="low_rating">
             <div>
               <div>
@@ -60,7 +400,7 @@ import RatingStars from 'components/RatingStars.vue';
             </div>
           </template>
         </div>
-      </div>
+      </q-scroll-area>
       <q-btn type="button" @click="modal = true" style="background: goldenrod; color: white" label="평가한 음식" />
     </q-card>
     <q-dialog v-model="modal">
