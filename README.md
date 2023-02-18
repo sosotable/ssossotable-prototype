@@ -1,4 +1,4 @@
-# 소소식탁 프론트엔드
+# 소소식탁
 
     Frontend framework by
     
