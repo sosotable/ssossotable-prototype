@@ -12,23 +12,36 @@
       arrows
       :height="windowHeight"
       class="text-black rounded-borders carousel"
-
     >
-      <q-carousel-slide :style='mapStyle' name="map" class="column no-wrap flex-center" >
+      <q-carousel-slide style='width: 100%; height: 100%;' name="map" class="column no-wrap flex-center" >
         <div style='width: 100%; height: 100%'>
           <div>
             <q-input
-              v-model="search"
+              v-model="searchText"
               debounce="500"
               filled
               placeholder="장소를 검색해보세요"
             >
               <template v-slot:append>
-                <q-icon name="search" />
+                <q-icon name="search" @click='search'/>
               </template>
             </q-input>
           </div>
           <div id='map' class='column' :style='mapStyle'></div>
+          <q-scroll-area :style='placeListStyle'>
+            <q-list bordered separator>
+              <q-item id='place-list' v-for='(place, idx) in places' v-bind:key='idx'>
+                <q-item-section>
+                  <q-item-label>{{place.place_name}}</q-item-label>
+                  <q-item-label caption>{{ place.road_address_name }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-scroll-area>
+
+          <div id='place-info' :style='placeInfoStyle' >
+
+          </div>
         </div>
       </q-carousel-slide>
       <q-carousel-slide name="feed" class="column no-wrap flex-center">
@@ -147,12 +160,25 @@ export default defineComponent({
         width: '100%',
         height: '80%',
       },
+      placeListStyle: {
+        width: '100%',
+        height: '40%',
+        maxHeight: '40%',
+        display: 'none'
+      },
+      placeInfoStyle: {
+        width: '100%',
+        height: '80%',
+        display: 'none'
+      },
       slide: ref('map'),
       map: null,
       infowindow: null,
       ps: null,
       windowHeight: '',
-      search: ''
+      searchText: '',
+      markers: [],
+      places: []
     };
   },
   watch: {
@@ -169,10 +195,56 @@ export default defineComponent({
           level: 5,
         };
         this.map = new kakao.maps.Map(container, options);
-        this.infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
+        this.infowindow = new kakao.maps.InfoWindow({ zIndex:1 });
         this.ps = new kakao.maps.services.Places();
       }, 100)
     },
+    placesSearchCB: function(data, status, pagination) {
+      if (status === kakao.maps.services.Status.OK) {
+        // MARK: 기존 마커 삭제
+        if(this.markers.length !== 0) {
+          for(let i = 0; i < this.markers.length; i++) {
+            this.markers[i].setMap(null)
+          }
+          this.markers = []
+        }
+        // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+        // LatLngBounds 객체에 좌표를 추가합니다
+        const bounds = new kakao.maps.LatLngBounds();
+
+        this.places = []
+        this.mapStyle.height = '40%'
+        this.placeListStyle.display = 'block'
+        this.placeListStyle.height = '40%'
+        for (let i=0; i<data.length; i++) {
+          this.places.push(data[i])
+          this.displayMarker(data[i]);
+          bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+        }
+
+        // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+        this.map.setBounds(bounds);
+      }
+    },
+    // 지도에 마커를 표시하는 함수입니다
+    displayMarker: function(place) {
+      // 마커를 생성하고 지도에 표시합니다
+      const marker = new kakao.maps.Marker({
+        map: this.map,
+        position: new kakao.maps.LatLng(place.y, place.x)
+      });
+      this.markers.push(marker)
+      // 마커에 클릭이벤트를 등록합니다
+      kakao.maps.event.addListener(marker, 'click', () => {
+        // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
+        this.infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
+        this.infowindow.open(this.map, marker);
+      });
+    },
+    search: function() {
+      this.ps.keywordSearch(this.searchText, this.placesSearchCB);
+      this.searchText = ''
+    }
   },
   computed: {},
   created() {
