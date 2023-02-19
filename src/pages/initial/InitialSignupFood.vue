@@ -25,7 +25,7 @@ import RatingStars from 'components/RatingStars.vue';
           <div class="box">
             <img class="box-image" :src="item.image" />
           </div>
-          <div class="food-info" style="margin: 10px 0">
+          <div class="food-info" style="margin: 10px">
             <div>
               <p style="margin: 0 !important; font-size: 20px">
                 {{ item.name }}
@@ -34,8 +34,7 @@ import RatingStars from 'components/RatingStars.vue';
             <RatingStars
               v-on:rated="rated"
               :id="item.id"
-              width="20px"
-              height="40px"
+              size="3em"
             ></RatingStars>
           </div>
         </div>
@@ -90,7 +89,9 @@ export default defineComponent({
     };
   },
   methods: {
+    // MARK: 하위 템플릿(RatingStarts 에서 이벤트 emit)
     rated(rating, id) {
+      // MARK: 20개의 음식을 모두 평가했다면 종료 아니라면 음식 추가
       this.ratingCount == 19 ? this.onSubmit() : this.ratingAdd(rating, id);
     },
     rand(min, max) {
@@ -109,7 +110,9 @@ export default defineComponent({
       });
       this.$router.push('/main/feed');
     },
+    // MARK: 서버의 DAO 모듈 통해서 음식 평가 정보 INSERT
     ratingAdd: async function (rating, id) {
+      // MARK: timeout 미실시시 렌더링된 템플릿이 없어 runtime error 발생
       setTimeout(async () => {
         await fetch('http://127.0.0.1:3000/DAO/INSERT', {
           method: 'POST',
@@ -119,6 +122,7 @@ export default defineComponent({
             values: `${this.$q.cookies.get('user_key')}, ${id}, ${rating}`,
           }),
         });
+        // MARK: Transition 템플릿 사용 평가 완료된 음식은 사라지도록 함
         this.items[id].show = false;
         this.ratingCount += 1;
       }, 200);

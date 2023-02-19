@@ -19,8 +19,7 @@ import RatingStars from 'components/RatingStars.vue';
             <RatingStars
               v-on:rated="rated"
               :id="item.id"
-              width="20px"
-              height="40px"
+              size="3em"
             ></RatingStars>
           </div>
         </div>
@@ -64,6 +63,22 @@ export default defineComponent({
       };
     }
   },
+  methods: {
+    // MARK: 하위 템플릿에서 이벤트 수신 시 평가 작업 실시
+    rated: async function (rating, id) {
+      setTimeout(async () => {
+        await fetch('http://127.0.0.1:3000/DAO/INSERT', {
+          method: 'POST',
+          body: new URLSearchParams({
+            table: 'rating',
+            columns: `user_id, food_id, rating`,
+            values: `${this.$q.cookies.get('user_key')}, ${id}, ${rating}`,
+          }),
+        });
+        this.items[id].show = false;
+      }, 200);
+    },
+  }
 });
 </script>
 

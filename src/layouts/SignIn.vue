@@ -126,7 +126,6 @@ export default defineComponent({
     };
   },
   async mounted() {
-    console.log(this.$q.cookies.getAll())
     if (await this.getSessionKey()) {
       this.$q.loading.show({
         message:
