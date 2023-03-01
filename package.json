@@ -9,15 +9,18 @@
     "lint": "eslint --ext .js,.ts,.vue ./",
     "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
     "test": "echo \"No test specified\" && exit 0",
-    "dev": "quasar dev",
-    "build": "quasar build",
-    "build:pwa": "quasar build -m pwa"
+    "dev": "quasar dev -m ssr",
+    "build": "quasar build -m ssr",
+    "build:pwa": "quasar build -m pwa",
+    "start": "pm2 start dist/ssr/index.js --watch"
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
     "crypto-js": "^4.1.1",
     "dotenv": "^16.0.3",
+    "firebase": "^9.17.1",
+    "firebaseui": "^6.0.2",
     "quasar": "^2.6.0",
     "socket.io-client": "^4.5.4",
     "vue": "^3.0.0",
