@@ -1,9 +1,11 @@
 <h3>2022-2학기 상명대학교 오름페스티벌 우수작 선정(자기설계)</h3>
 
-    https://zep.us/play/2XP5Yp
+    https://zep.us/play/2XP5Y
 
 ## 소소식탁(Webapp by Vue.js)
 - http://ssossotable.com
+
+p
 
 ### Frontend client
 
